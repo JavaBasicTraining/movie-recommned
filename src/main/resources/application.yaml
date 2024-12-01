@@ -1,0 +1,53 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+  application:
+    name: ${APPLICATION_NAME:recommend-service}
+  profiles:
+    active: ${ENV:dev}
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/movie_recommend}
+    username: ${DATABASE_USER:root}
+    password: ${DATABASE_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: hikari-id
+      auto-commit: true
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+      minimum-idle: 3
+      maximum-pool-size: 20
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate.format_sql: false
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/movie_website_realm
+          jwk-set-uri: http://localhost:8080/realms/movie_website_realm/protocol/openid-connect/certs
+  elasticsearch:
+    uris: ${ELASTICSEARCH_PROTOCOL:http}://${ELASTICSEARCH_HOST:localhost}:${ELASTICSEARCH_PORT:9200}
+
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST:localhost}
+  port: ${ELASTICSEARCH_PORT:9200}
+
+
